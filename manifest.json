@@ -1,0 +1,26 @@
+{
+    "name": "Moxfield Enhancement Suite",
+    "description": "An enhancement suite for Moxfield",
+    "version": "0.1.0",
+    "manifest_version": 3,
+    "icons": {
+        "16": "public/icon16.png",
+        "48": "public/icon48.png",
+        "128": "public/icon128.png"
+    },
+    "action": {
+        "default_popup": "popup.html",
+        "default_icon": {}
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "https://moxfield.com/**"
+            ],
+            "run_at": "document_end",
+            "js": [
+                "contentScript.tsx"
+            ]
+        }
+    ]
+}
