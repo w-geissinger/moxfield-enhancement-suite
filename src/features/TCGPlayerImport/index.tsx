@@ -7,7 +7,6 @@ const observerConfig = { childList: true, subtree: false };
 
 const observer = new MutationObserver(() => {
     if (!document.getElementById('mes-importer-root')) {
-        console.log('observer ran')
         decorate();
     }
 });

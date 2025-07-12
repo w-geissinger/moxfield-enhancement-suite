@@ -13,6 +13,7 @@ type TouchGlobalCSSPluginOptions = {
     watchFiles: string[];
 };
 
+// Jank plugin to resolve some issues involving tailwind/crxjs/vite HMR
 export default function touchGlobalCSSPlugin({
     cssFilePath,
     watchFiles,
