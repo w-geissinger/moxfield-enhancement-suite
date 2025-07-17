@@ -257,7 +257,7 @@ export interface ImportResponse {
         lineNumber: number;
         errorMessage: string;
         originalText: string;
-    };
+    }[];
     isSuccessful: boolean;
     totalImportedCount: number;
 }

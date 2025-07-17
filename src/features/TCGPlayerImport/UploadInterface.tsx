@@ -29,6 +29,14 @@ interface UploadedFileWithMetadata {
      */
     error?: UploadErrorType;
     /**
+     * A list of errors for specific cards that were attempted to be imported.
+     */
+    cardErrors?: {
+        errorMessage: string;
+        lineNumber: number;
+        originalText: string;
+    }[]
+    /**
      * Signifies that this item is complete
      */
     uploaded?: boolean;
@@ -107,9 +115,14 @@ export default function UploadInterface(props: { completed: () => void }) {
 
     if (loading) {
         return <div className="mes:flex mes:flex-col mes:gap-4 mes:w-90 mes:h-51">
-            <div className="mes:flex mes:flex-col mes:pb-2">
+            <div className="mes:relative mes:flex mes:flex-col mes:pb-2">
                 <span className="mes:text-xl mes:font-bold">Moxfield Enhancement Suite</span>
                 <span className="mes:text-base">Import CSV file(s) from TCGPlayer</span>
+                <div className="mes:absolute mes:top-0 mes:-right-2 mes:justify-self-end mes:h-6 mes:w-6 mes:text-gray-500 mes:hover:text-black">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" onClick={() => { props.completed() }}>
+                        <path fillRule="evenodd" clipRule="evenodd" d="M5.29289 5.29289C5.68342 4.90237 6.31658 4.90237 6.70711 5.29289L12 10.5858L17.2929 5.29289C17.6834 4.90237 18.3166 4.90237 18.7071 5.29289C19.0976 5.68342 19.0976 6.31658 18.7071 6.70711L13.4142 12L18.7071 17.2929C19.0976 17.6834 19.0976 18.3166 18.7071 18.7071C18.3166 19.0976 17.6834 19.0976 17.2929 18.7071L12 13.4142L6.70711 18.7071C6.31658 19.0976 5.68342 19.0976 5.29289 18.7071C4.90237 18.3166 4.90237 17.6834 5.29289 17.2929L10.5858 12L5.29289 6.70711C4.90237 6.31658 4.90237 5.68342 5.29289 5.29289Z" fill="currentColor" />
+                    </svg>
+                </div>
             </div>
             <div className="mes:flex mes:flex-col mes:flex-grow mes:items-center mes:justify-center">
                 <span>Loading...</span>
@@ -118,9 +131,14 @@ export default function UploadInterface(props: { completed: () => void }) {
     }
 
     return <div className="mes:flex mes:flex-col mes:gap-4">
-        <div className="mes:flex mes:flex-col mes:pb-2">
+        <div className="mes:relative mes:flex mes:flex-col mes:pb-2">
             <span className="mes:text-xl mes:font-bold">Moxfield Enhancement Suite</span>
             <span className="mes:text-base">Import CSV file(s) from TCGPlayer</span>
+            <div className="mes:absolute mes:top-0 mes:-right-2 mes:justify-self-end mes:h-6 mes:w-6 mes:text-gray-500 mes:hover:text-black">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" onClick={() => { props.completed() }}>
+                    <path fillRule="evenodd" clipRule="evenodd" d="M5.29289 5.29289C5.68342 4.90237 6.31658 4.90237 6.70711 5.29289L12 10.5858L17.2929 5.29289C17.6834 4.90237 18.3166 4.90237 18.7071 5.29289C19.0976 5.68342 19.0976 6.31658 18.7071 6.70711L13.4142 12L18.7071 17.2929C19.0976 17.6834 19.0976 18.3166 18.7071 18.7071C18.3166 19.0976 17.6834 19.0976 17.2929 18.7071L12 13.4142L6.70711 18.7071C6.31658 19.0976 5.68342 19.0976 5.29289 18.7071C4.90237 18.3166 4.90237 17.6834 5.29289 17.2929L10.5858 12L5.29289 6.70711C4.90237 6.31658 4.90237 5.68342 5.29289 5.29289Z" fill="currentColor" />
+                </svg>
+            </div>
 
             {
                 error && <div className="mes:flex mes:flex-row mes:items-center mes:pt-6 mes:gap-2 mes:text-red-400">
@@ -160,7 +178,7 @@ export default function UploadInterface(props: { completed: () => void }) {
 
             <button
                 className="mes:!rounded-lg mes:!text-xs mes:leading-0 mes:!p-2.5 mes:h-8 mes:!border-none mes:bg-[hsl(279,68%,32%)] mes:disabled:bg-gray-600 mes:!text-white mes:!font-600 mes:!shadow-md mes:text-center"
-                disabled={!uploads?.length}
+                disabled={!uploads?.length || !uploads?.find(upload => !upload.uploaded)}
                 onClick={handleSubmission}
             >
                 Submit
@@ -174,7 +192,11 @@ function UploadItem(props: { uploadData: UploadedFileWithMetadata, renameBinder:
 
     const [isExpanded, setExpanded] = React.useState(false);
 
-    return <div className={`mes:flex mes:flex-col mes:rounded ${uploadData.error ? 'mes:bg-red-200' : 'mes:bg-neutral-100'}`}>
+    if (!uploadData) {
+        return null;
+    }
+
+    return <div className={`mes:flex mes:flex-col mes:rounded ${uploadData?.error ? 'mes:bg-red-200' : 'mes:bg-neutral-100'}`}>
         <div className="mes:flex mes:flex-row mes:justify-between mes:items-center mes:h-10" key={index}>
             <div className="mes:text-sm mes:flex mes:flex-row mes:gap-2 mes:pr-2 mes:h-full mes:w-full mes:items-center">
                 <span className="mes:border-r-1 mes:w-6 mes:pl-2">{index + 1}</span>
@@ -208,9 +230,16 @@ function UploadItem(props: { uploadData: UploadedFileWithMetadata, renameBinder:
             </div>
         </div>
         {
-            isExpanded && uploadData.error && <span className="mes:text-xs mes:p-2">
+            isExpanded && uploadData.error && <span className="mes:text-xs mes:p-2 mes:font-bold">
                 {SingularErrors[uploadData.error]}
             </span>
+        }
+        {
+            isExpanded && uploadData.error === 'cardsNotFound' && uploadData?.cardErrors?.map(error => {
+                return <span className="mes:text-xs mes:p-2">
+                    {error.lineNumber}: {error.errorMessage}
+                </span>
+            })
         }
     </div>
 }
@@ -291,13 +320,17 @@ async function convertAndSubmitUploads(uploads: UploadedFileWithMetadata[]): Pro
 
             const response = await ImportCards(upload.file, upload.binderId ?? '');
 
-            if (response) {
+            if (!response.errors) {
                 upload.uploaded = true;
-                return upload;
             } else {
+                upload.uploaded = true
                 isError = true;
+                upload.cardErrors = response.errors;
+                upload.error = 'cardsNotFound';
             }
-        }, uploads)) as UploadedFileWithMetadata[];
+
+            return upload;
+        }, convertedUploads)) as UploadedFileWithMetadata[];
 
         if (isError) {
             return {
