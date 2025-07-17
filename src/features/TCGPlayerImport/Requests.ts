@@ -216,15 +216,15 @@ export async function Authenticate(): Promise<boolean> {
 }
 
 export interface BinderResponse {
-    id: string,
-    name: string,
-    description: string,
-    publicId: string,
-    visibility: "public" | "private" | "unlisted",
-    createdAtUtc: string,
-    lastUpdatedAtUtc: string,
-    isPinned: boolean,
-    createdBy: {
+    id?: string,
+    name: string | string[],
+    description?: string,
+    publicId?: string,
+    visibility?: "public" | "private" | "unlisted",
+    createdAtUtc?: string,
+    lastUpdatedAtUtc?: string,
+    isPinned?: boolean,
+    createdBy?: {
         userName: string,
         displayName: string,
         "badges": []

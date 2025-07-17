@@ -4,8 +4,8 @@ export function rateLimitedMap<T, K>(action: (value: T, index: number, array: T[
 
     return array.map((value, index) => {
         return new Promise(res => {
-            setTimeout(async () => {
-                const response = await action(value, index, array);
+            setTimeout(() => {
+                const response = action(value, index, array);
                 res(response)
             }, _rate * index + 1)
         })
