@@ -6,6 +6,5 @@ export default function Modal(props: { closeModal: () => void, children: React.R
         <div className="mes:z-999 mes:rounded-lg mes:fixed mes:top-1/2 mes:left-1/2 mes:-translate-y-1/2 mes:-translate-x-1/2 mes:p-4 mes:px-6 mes:bg-neutral-100 mes:shadow-2xl">
             {children}
         </div>
-
     </>
 }
