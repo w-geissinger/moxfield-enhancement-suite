@@ -1,13 +1,12 @@
 # Moxfield Enhancement Suite
 
-Hi! Welcome to the code. Moxfield Enhancement Suite is intended to be a small set of tools to improve the user experience of Moxfield. This project is currently in the **early stages of development.** There is a closed beta starting soon, so if you're interested in the features listed below, reach out and you will be whitelisted for the beta!
+Hi! Welcome to the code. Moxfield Enhancement Suite is intended to be a small set of tools to improve the user experience of [Moxfield](https://moxfield.com/). This project is currently in the **early stages of development.** There is a closed beta starting soon, so if you're interested in the features listed below, reach out and you will be whitelisted for the beta!
 
 Once this project is publicly available on the chrome store, I'll be sure to add a link here.
 
-
 ## Features
 
-There's a small set of features that I have been dreaming about, and I wanted them enough that I chose to build my own extension. With that being said, this is by no means a definitive list, and I am always happy to hear ideas about (reasonably achievable) ideas for new features.
+There's a small set of features that I have been dreaming about, and I wanted them enough that I chose to build my own extension. With that being said, this is by no means a definitive list, and I am always happy to hear (reasonably achievable) ideas for new features.
 
 ### Features in progress
 - **Conversion of CSV formats** that Moxfield does not support (currently, **TCGPlayer** is my focus)
@@ -38,6 +37,6 @@ To do this:
 - Click **load unpacked**
 - Choose the `/moxfield-enhancement-suite/dist` directory and the extension should be installed!
 
-Now, you should be ready to visit Moxfield. Currently, the only place where the extension will add anything to the page is on your [collection](https://moxfield.com/collection) page.
+Now, you should be ready to visit Moxfield. Currently, the only place where the extension will add anything to the page is on your [collection](https://moxfield.com/collection/) page.
 
-This extension uses [vite](), which enables the extension to update its contents as you save files within the project. Whenever you've made a change, simply reloading the page you're working in should be enough to see updated UI.
+This extension uses [vite](https://vite.dev/), which enables the extension to update its contents as you save files within the project. Whenever you've made a change, simply reloading the page you're working in should be enough to see updated UI.
