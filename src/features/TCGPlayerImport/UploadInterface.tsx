@@ -2,6 +2,7 @@ import React from 'react'
 import { FileUploader } from "react-drag-drop-files"
 import { Authenticate, CreateBinder, ImportCards, TCGPlayerToMoxfieldCSV } from './Requests';
 import { rateLimitedMap } from '../../utilities/rateLimiting';
+import { ChevronDown, ChevronUp, ExclamationCircle, Trash2, X, XCircle } from 'react-bootstrap-icons';
 
 type UploadErrorType = 'authentication' | 'conversion' | 'binderExists' | 'cardsNotFound';
 
@@ -119,9 +120,7 @@ export default function UploadInterface(props: { completed: () => void }) {
                 <span className="mes:text-xl mes:font-bold">Moxfield Enhancement Suite</span>
                 <span className="mes:text-base">Import CSV file(s) from TCGPlayer</span>
                 <div className="mes:absolute mes:top-0 mes:-right-2 mes:justify-self-end mes:h-6 mes:w-6 mes:text-gray-500 mes:hover:text-black">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" onClick={() => { props.completed() }}>
-                        <path fillRule="evenodd" clipRule="evenodd" d="M5.29289 5.29289C5.68342 4.90237 6.31658 4.90237 6.70711 5.29289L12 10.5858L17.2929 5.29289C17.6834 4.90237 18.3166 4.90237 18.7071 5.29289C19.0976 5.68342 19.0976 6.31658 18.7071 6.70711L13.4142 12L18.7071 17.2929C19.0976 17.6834 19.0976 18.3166 18.7071 18.7071C18.3166 19.0976 17.6834 19.0976 17.2929 18.7071L12 13.4142L6.70711 18.7071C6.31658 19.0976 5.68342 19.0976 5.29289 18.7071C4.90237 18.3166 4.90237 17.6834 5.29289 17.2929L10.5858 12L5.29289 6.70711C4.90237 6.31658 4.90237 5.68342 5.29289 5.29289Z" fill="currentColor" />
-                    </svg>
+                    <X size="1.5rem" onClick={() => { props.completed() }} />
                 </div>
             </div>
             <div className="mes:flex mes:flex-col mes:flex-grow mes:items-center mes:justify-center">
@@ -130,28 +129,17 @@ export default function UploadInterface(props: { completed: () => void }) {
         </div>
     }
 
-    return <div className="mes:flex mes:flex-col mes:gap-4">
+    return <div className="mes:flex mes:flex-col mes:gap-4 mes:max-h-80vh">
         <div className="mes:relative mes:flex mes:flex-col mes:pb-2">
             <span className="mes:text-xl mes:font-bold">Moxfield Enhancement Suite</span>
             <span className="mes:text-base">Import CSV file(s) from TCGPlayer</span>
             <div className="mes:absolute mes:top-0 mes:-right-2 mes:justify-self-end mes:h-6 mes:w-6 mes:text-gray-500 mes:hover:text-black">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" onClick={() => { props.completed() }}>
-                    <path fillRule="evenodd" clipRule="evenodd" d="M5.29289 5.29289C5.68342 4.90237 6.31658 4.90237 6.70711 5.29289L12 10.5858L17.2929 5.29289C17.6834 4.90237 18.3166 4.90237 18.7071 5.29289C19.0976 5.68342 19.0976 6.31658 18.7071 6.70711L13.4142 12L18.7071 17.2929C19.0976 17.6834 19.0976 18.3166 18.7071 18.7071C18.3166 19.0976 17.6834 19.0976 17.2929 18.7071L12 13.4142L6.70711 18.7071C6.31658 19.0976 5.68342 19.0976 5.29289 18.7071C4.90237 18.3166 4.90237 17.6834 5.29289 17.2929L10.5858 12L5.29289 6.70711C4.90237 6.31658 4.90237 5.68342 5.29289 5.29289Z" fill="currentColor" />
-                </svg>
+                <X size="1.5rem" onClick={() => { props.completed() }} />
             </div>
 
             {
                 error && <div className="mes:flex mes:flex-row mes:items-center mes:pt-6 mes:gap-2 mes:text-red-400">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="currentColor" width="24px" height="24px" viewBox="0 0 24 24">
-                        <g data-name="Layer 2">
-                            <g data-name="alert-circle">
-                                <rect width="24" height="24" opacity="0" />
-                                <path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 8-8 8 8 0 0 1-8 8z" />
-                                <circle cx="12" cy="16" r="1" />
-                                <path d="M12 7a1 1 0 0 0-1 1v5a1 1 0 0 0 2 0V8a1 1 0 0 0-1-1z" />
-                            </g>
-                        </g>
-                    </svg>
+                    <ExclamationCircle size="1.5rem" />
                     <span className="mes:text-base mes:font-bold">{PluralErrors[error]}</span>
                 </div>
             }
@@ -166,7 +154,7 @@ export default function UploadInterface(props: { completed: () => void }) {
         }
         {
             !!uploads?.length &&
-            <div className="mes:flex mes:flex-col mes:p-2 mes:gap-2 mes:max-h-400 mes:overflow-y-auto mes:w-90 mes:bg-neutral-200 mes:shadow-lg mes:rounded">
+            <div className="mes:flex mes:flex-col mes:p-3 mes:gap-2 mes:max-h-400 mes:overflow-y-auto mes:overflow-x-none mes:w-90 mes:bg-neutral-200 mes:shadow-lg mes:rounded">
                 {
                     uploads.map((uploadData, index) => {
                         return <UploadItem uploadData={uploadData} renameBinder={renameBinder} removeUpload={removeUpload} index={index} key={index} />
@@ -196,7 +184,7 @@ function UploadItem(props: { uploadData: UploadedFileWithMetadata, renameBinder:
         return null;
     }
 
-    return <div className={`mes:flex mes:flex-col mes:rounded ${uploadData?.error ? 'mes:bg-red-200' : 'mes:bg-neutral-100'}`}>
+    return <div className={`mes:flex mes:flex-col mes:rounded mes:relative mes:group ${uploadData?.error ? 'mes:bg-red-200' : 'mes:bg-neutral-100'}`}>
         <div className="mes:flex mes:flex-row mes:justify-between mes:items-center mes:h-10" key={index}>
             <div className="mes:text-sm mes:flex mes:flex-row mes:gap-2 mes:pr-2 mes:h-full mes:w-full mes:items-center">
                 <span className="mes:border-r-1 mes:w-6 mes:pl-2">{index + 1}</span>
@@ -217,16 +205,20 @@ function UploadItem(props: { uploadData: UploadedFileWithMetadata, renameBinder:
                 }
             </div>
 
-            {!!uploadData.error && <div className="mes:h-6 mes:w-8 mes:pr-2 mes:text-gray-500 mes:hover:text-black">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" onClick={() => setExpanded(!isExpanded)}>
-                    <path fill-rule="evenodd" clip-rule="evenodd" d="M4.29289 8.29289C4.68342 7.90237 5.31658 7.90237 5.70711 8.29289L12 14.5858L18.2929 8.29289C18.6834 7.90237 19.3166 7.90237 19.7071 8.29289C20.0976 8.68342 20.0976 9.31658 19.7071 9.70711L12.7071 16.7071C12.3166 17.0976 11.6834 17.0976 11.2929 16.7071L4.29289 9.70711C3.90237 9.31658 3.90237 8.68342 4.29289 8.29289Z" fill="currentColor" />
-                </svg>
-            </div>}
+            {
+                !!uploadData.error &&
+                <div className="mes:pr-2 mes:text-gray-500 mes:hover:text-black">
+                    {
+                        isExpanded
+                            ? <ChevronUp size="1.5rem" onClick={() => setExpanded(false)} />
+                                : <ChevronDown size="1.5rem" onClick={() => setExpanded(true)} />
 
-            <div className="mes:h-6 mes:w-8 mes:pr-2 mes:text-gray-500 mes:hover:text-black">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" onClick={() => { removeUpload(index) }}>
-                    <path fillRule="evenodd" clipRule="evenodd" d="M5.29289 5.29289C5.68342 4.90237 6.31658 4.90237 6.70711 5.29289L12 10.5858L17.2929 5.29289C17.6834 4.90237 18.3166 4.90237 18.7071 5.29289C19.0976 5.68342 19.0976 6.31658 18.7071 6.70711L13.4142 12L18.7071 17.2929C19.0976 17.6834 19.0976 18.3166 18.7071 18.7071C18.3166 19.0976 17.6834 19.0976 17.2929 18.7071L12 13.4142L6.70711 18.7071C6.31658 19.0976 5.68342 19.0976 5.29289 18.7071C4.90237 18.3166 4.90237 17.6834 5.29289 17.2929L10.5858 12L5.29289 6.70711C4.90237 6.31658 4.90237 5.68342 5.29289 5.29289Z" fill="currentColor" />
-                </svg>
+                    }
+                </div>
+            }
+
+            <div className="mes:absolute mes:-top-2 mes:-right-2 mes:hidden mes:group-hover:flex mes:text-red-500 mes:hover:text-red-700">
+                <XCircle size="1rem" onClick={() => { removeUpload(index) }} />
             </div>
         </div>
         {
