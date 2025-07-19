@@ -2,7 +2,9 @@ import React from 'react'
 import { FileUploader } from "react-drag-drop-files"
 import { Authenticate, CreateBinder, ImportCards, TCGPlayerToMoxfieldCSV } from './Requests';
 import { rateLimitedMap } from '../../utilities/rateLimiting';
-import { ChevronDown, ChevronUp, ExclamationCircle, Trash2, X, XCircle } from 'react-bootstrap-icons';
+import { ChevronDown, ChevronUp, ExclamationCircle, X, XCircle } from 'react-bootstrap-icons';
+import { Trefoil } from 'ldrs/react';
+import 'ldrs/react/Trefoil.css';
 
 type UploadErrorType = 'authentication' | 'conversion' | 'binderExists' | 'cardsNotFound';
 
@@ -115,21 +117,33 @@ export default function UploadInterface(props: { completed: () => void }) {
     }
 
     if (loading) {
-        return <div className="mes:flex mes:flex-col mes:gap-4 mes:w-90 mes:h-51">
+        return <div className="mes:flex mes:flex-col mes:gap-2 mes:w-90 mes:h-51">
             <div className="mes:relative mes:flex mes:flex-col mes:pb-2">
                 <span className="mes:text-xl mes:font-bold">Moxfield Enhancement Suite</span>
-                <span className="mes:text-base">Import CSV file(s) from TCGPlayer</span>
                 <div className="mes:absolute mes:top-0 mes:-right-2 mes:justify-self-end mes:h-6 mes:w-6 mes:text-gray-500 mes:hover:text-black">
                     <X size="1.5rem" onClick={() => { props.completed() }} />
                 </div>
             </div>
-            <div className="mes:flex mes:flex-col mes:flex-grow mes:items-center mes:justify-center">
-                <span>Loading...</span>
+            <div className="mes:flex mes:flex-col mes:flex-grow mes:items-center mes:justify-center mes:gap-5">
+                <span className="mes:text-xs">
+                    Packing up your cards...
+                </span>
+                <Trefoil
+                    size="40"
+                    stroke="4"
+                    strokeLength="0.15"
+                    bgOpacity="0.1"
+                    speed="1.4"
+                    color="black"
+                />
+                <span className="mes:text-xs mes:text-center">
+                    We only send one request per second to avoid spamming servers!
+                </span>
             </div>
         </div>
     }
 
-    return <div className="mes:flex mes:flex-col mes:gap-4 mes:max-h-80vh">
+    return <div className="mes:flex mes:flex-col mes:gap-4 mes:max-h-[80vh]">
         <div className="mes:relative mes:flex mes:flex-col mes:pb-2">
             <span className="mes:text-xl mes:font-bold">Moxfield Enhancement Suite</span>
             <span className="mes:text-base">Import CSV file(s) from TCGPlayer</span>
@@ -154,12 +168,19 @@ export default function UploadInterface(props: { completed: () => void }) {
         }
         {
             !!uploads?.length &&
-            <div className="mes:flex mes:flex-col mes:p-3 mes:gap-2 mes:max-h-400 mes:overflow-y-auto mes:overflow-x-none mes:w-90 mes:bg-neutral-200 mes:shadow-lg mes:rounded">
-                {
-                    uploads.map((uploadData, index) => {
-                        return <UploadItem uploadData={uploadData} renameBinder={renameBinder} removeUpload={removeUpload} index={index} key={index} />
-                    })
-                }
+            <div className="mes:flex mes:flex-col mes:min-h-0 mes:overflow-none mes:py-3 mes:w-90 mes:shadow-lg mes:rounded mes:border-1 mes:border-gray-200">
+
+                <div className="mes:flex mes:flex-row mes:text-sm mes:mx-3 mes:border-1 mes:rounded mes:shadow-sm mes:border-gray-300 mes:z-1 mes:relative">
+                    <span className="mes:w-10 mes:pl-1 mes:text-center">#</span>
+                    <span className="mes:w-full mes:pl-3">File/Binder Name</span>
+                </div>
+                <div className="mes:flex mes:flex-col mes:gap-2 mes:overflow-y-auto mes:px-3 mes:pt-2 mes:overflow-x-none">
+                    {
+                        uploads.map((uploadData, index) => {
+                            return <UploadItem uploadData={uploadData} renameBinder={renameBinder} removeUpload={removeUpload} index={index} key={index} />
+                        })
+                    }
+                </div>
             </div>
         }
         <div className="mes:flex mes:flex-row mes:justify-end mes:pt-2 mes:border-t-1 mes:border-t-gray-300">
@@ -184,10 +205,12 @@ function UploadItem(props: { uploadData: UploadedFileWithMetadata, renameBinder:
         return null;
     }
 
-    return <div className={`mes:flex mes:flex-col mes:rounded mes:relative mes:group ${uploadData?.error ? 'mes:bg-red-200' : 'mes:bg-neutral-100'}`}>
+    return <div
+        className={`mes:flex mes:flex-col mes:rounded mes:relative mes:max-w-full mes:group mes:border-1 mes:border-gray-200 mes:shadow-sm mes:hover:shadow-2xl mes:hover:border-gray-400 ${uploadData?.error ? 'mes:bg-red-100' : 'mes:bg-neutral-100'}`}
+    >
         <div className="mes:flex mes:flex-row mes:justify-between mes:items-center mes:h-10" key={index}>
             <div className="mes:text-sm mes:flex mes:flex-row mes:gap-2 mes:pr-2 mes:h-full mes:w-full mes:items-center">
-                <span className="mes:border-r-1 mes:w-6 mes:pl-2">{index + 1}</span>
+                <span className="mes:border-r-1 mes:w-10 mes:pl-3 mes:pr-2 mes:text-center">{index + 1}</span>
                 {
                     !uploadData.binderId &&
                     <input
@@ -207,19 +230,23 @@ function UploadItem(props: { uploadData: UploadedFileWithMetadata, renameBinder:
 
             {
                 !!uploadData.error &&
-                <div className="mes:pr-2 mes:text-gray-500 mes:hover:text-black">
+                <div className="mes:pr-3 mes:pl-1 mes:text-gray-500 mes:hover:text-black">
                     {
                         isExpanded
-                            ? <ChevronUp size="1.5rem" onClick={() => setExpanded(false)} />
-                                : <ChevronDown size="1.5rem" onClick={() => setExpanded(true)} />
+                            ? <ChevronUp size="1rem" onClick={() => setExpanded(false)} />
+                            : <ChevronDown size="1rem" onClick={() => setExpanded(true)} />
 
                     }
+                    <div className="mes:absolute mes:-top-2 mes:-left-2 mes:text-red-300 mes:group-hover:text-red-500">
+                        <ExclamationCircle size="1rem" />
+                    </div>
                 </div>
             }
 
             <div className="mes:absolute mes:-top-2 mes:-right-2 mes:hidden mes:group-hover:flex mes:text-red-500 mes:hover:text-red-700">
                 <XCircle size="1rem" onClick={() => { removeUpload(index) }} />
             </div>
+
         </div>
         {
             isExpanded && uploadData.error && <span className="mes:text-xs mes:p-2 mes:font-bold">
