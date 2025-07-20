@@ -48,15 +48,15 @@ interface UploadedFileWithMetadata {
 const PluralErrors: { [key in UploadErrorType]: string } = {
     'authentication': 'There was an issue authenticating with Moxfield.',
     'conversion': 'There was an error converting one of your files.',
-    'binderExists': 'One of your binders already exists!',
+    'binderExists': 'Some of your binders already exist! \n Rename them below.',
     'cardsNotFound': 'Certain cards couldn\'t be found.'
 } as const
 
 const SingularErrors: { [key in UploadErrorType]: string } = {
     'authentication': 'This error shouldn\'t have been shown to you.',
     'conversion': 'There was an error converting this file to Moxfield\'s format.',
-    'binderExists': 'You already have a binder with this name.',
-    'cardsNotFound': 'The following cards couldn\'t be found. All other cards in the list were imported successfully.'
+    'binderExists': 'You already have a binder with this name. \n Rename this item and try again.',
+    'cardsNotFound': 'The following cards couldn\'t be found. \n All other cards in the list were imported successfully.'
 } as const
 
 export default function UploadInterface(props: { completed: () => void }) {
@@ -66,6 +66,8 @@ export default function UploadInterface(props: { completed: () => void }) {
     const [loading, setLoading] = React.useState<boolean>(false);
 
     const [error, setError] = React.useState<UploadErrorType | false>(false);
+
+    const [forbiddenNames, setForbiddenNames] = React.useState<string[]>([]);
 
     const handleFileUploads = (_files: FileList) => {
         if (_files) {
@@ -92,6 +94,11 @@ export default function UploadInterface(props: { completed: () => void }) {
         if (uploads) {
             const newUploads = [...uploads];
             newUploads[index].label = label;
+            if (forbiddenNames.includes(label)) {
+                newUploads[index].error = 'binderExists';
+            } else {
+                newUploads[index].error = undefined;
+            }
             setUploads(newUploads);
         }
     }
@@ -106,6 +113,15 @@ export default function UploadInterface(props: { completed: () => void }) {
                 } else {
                     if (result.error) {
                         setError(result.error)
+                        if (result.error === 'binderExists' && result.uploads) {
+                            const agg: string[] = [];
+                            result.uploads.forEach(upload => {
+                                if (upload.error === 'binderExists') {
+                                    agg.push(upload.label);
+                                }
+                            })
+                            setForbiddenNames(prev => [...prev, ...agg])
+                        }
                     }
                     if (result.uploads) {
                         setUploads(result.uploads)
@@ -117,7 +133,7 @@ export default function UploadInterface(props: { completed: () => void }) {
     }
 
     if (loading) {
-        return <div className="mes:flex mes:flex-col mes:gap-2 mes:w-90 mes:h-51">
+        return <div className="mes:flex mes:flex-col mes:gap-2 mes:w-[50vw] mes:h-51">
             <div className="mes:relative mes:flex mes:flex-col mes:pb-2">
                 <span className="mes:text-xl mes:font-bold">Moxfield Enhancement Suite</span>
                 <div className="mes:absolute mes:top-0 mes:-right-2 mes:justify-self-end mes:h-6 mes:w-6 mes:text-gray-500 mes:hover:text-black">
@@ -161,20 +177,20 @@ export default function UploadInterface(props: { completed: () => void }) {
         {
             !uploads?.length &&
             <FileUploader multiple handleChange={handleFileUploads} name="file" types={['CSV']} >
-                <div className="mes:flex mes:items-center mes:justify-center mes:h-25 mes:w-90 mes:border-1 mes:border-dashed" style={{ borderColor: 'hsl(279, 68%, 32%)' }}>
+                    <div className="mes:flex mes:items-center mes:justify-center mes:h-25 mes:w-[50vw] mes:border-1 mes:border-dashed" style={{ borderColor: 'hsl(279, 68%, 32%)' }}>
                     <span className="mes:text-xs">Drop your CSV files here...</span>
                 </div>
             </FileUploader>
         }
         {
             !!uploads?.length &&
-            <div className="mes:flex mes:flex-col mes:min-h-0 mes:overflow-none mes:py-3 mes:w-90 mes:shadow-lg mes:rounded mes:border-1 mes:border-gray-200">
+            <div className="mes:flex mes:flex-col mes:min-h-0 mes:overflow-none mes:py-3 mes:w-[50vw] mes:shadow-lg mes:rounded mes:border-1 mes:border-gray-200">
 
-                <div className="mes:flex mes:flex-row mes:text-sm mes:mx-3 mes:border-1 mes:rounded mes:shadow-sm mes:border-gray-300 mes:z-1 mes:relative">
-                    <span className="mes:w-10 mes:pl-1 mes:text-center">#</span>
+                <div className="mes:flex mes:flex-row mes:text-sm mes:font-bold mes:py-1 mes:mx-3 mes:border-1 mes:rounded mes:shadow-sm mes:border-gray-300 mes:z-2 mes:relative">
+                    <span className="mes:w-10 mes:pl-1 mes:text-center mes:border-r-1">#</span>
                     <span className="mes:w-full mes:pl-3">File/Binder Name</span>
                 </div>
-                <div className="mes:flex mes:flex-col mes:gap-2 mes:overflow-y-auto mes:px-3 mes:pt-2 mes:overflow-x-none">
+                <div className="mes:flex mes:flex-col mes:gap-2 mes:overflow-y-auto mes:px-3 mes:pt-2 mes:overflow-x-none z-1">
                     {
                         uploads.map((uploadData, index) => {
                             return <UploadItem uploadData={uploadData} renameBinder={renameBinder} removeUpload={removeUpload} index={index} key={index} />
@@ -208,19 +224,25 @@ function UploadItem(props: { uploadData: UploadedFileWithMetadata, renameBinder:
     return <div
         className={`mes:flex mes:flex-col mes:rounded mes:relative mes:max-w-full mes:group mes:border-1 mes:border-gray-200 mes:shadow-sm mes:hover:shadow-2xl mes:hover:border-gray-400 ${uploadData?.error ? 'mes:bg-red-100' : 'mes:bg-neutral-100'}`}
     >
-        <div className="mes:flex mes:flex-row mes:justify-between mes:items-center mes:h-10" key={index}>
+        <div className="mes:flex mes:flex-row mes:justify-between mes:items-center mes:h-12" key={index}>
             <div className="mes:text-sm mes:flex mes:flex-row mes:gap-2 mes:pr-2 mes:h-full mes:w-full mes:items-center">
-                <span className="mes:border-r-1 mes:w-10 mes:pl-3 mes:pr-2 mes:text-center">{index + 1}</span>
+                <span className="mes:border-r-1 mes:w-10 mes:pl-3 mes:pr-2 mes:py-2 mes:h-8 mes:text-center mes:leading-4">{index + 1}</span>
                 {
                     !uploadData.binderId &&
-                    <input
-                        id={`upload-${index}`}
-                        className="mes:border-1 mes:border-gray-700 mes:rounded-md mes:px-2 mes:w-full"
-                        value={uploadData.label}
-                        onClick={e => { e.stopPropagation(); }}
-                        onChange={(e) => renameBinder(e.target.value, index)}
-                        type="text"
-                    ></input>
+                    <fieldset className=' mes:border-1! mes:focus-within:!border-gray-700 mes:!border-gray-300 mes:rounded-md mes:w-full mes:leading-3 mes:-mt-1'>
+                            <legend className="mes:relative mes:-top-0.25 mes:pb-0! mes:mb-0! mes:ml-1.5 mes:!px-0.5 mes:!text-[0.5rem] mes:!float-none mes:max-w-min mes:text-nowrap mes:font-semibold">
+                                Binder Name
+                            </legend>
+                            <input
+                                id={`upload-${index}`}
+                                className="mes:w-full mes:px-2 mes:pb-1 mes:!-mt-1 mes:focus:!border-none mes:focus:outline-0"
+                                value={uploadData.label}
+                                onClick={e => { e.stopPropagation(); }}
+                                onChange={(e) => renameBinder(e.target.value, index)}
+                                type="text"
+                            ></input>
+                    </fieldset>
+                    
                 }
                 {
                     !!uploadData.binderId &&
@@ -229,7 +251,7 @@ function UploadItem(props: { uploadData: UploadedFileWithMetadata, renameBinder:
             </div>
 
             {
-                !!uploadData.error &&
+                !!uploadData.error && uploadData.error === 'cardsNotFound' &&
                 <div className="mes:pr-3 mes:pl-1 mes:text-gray-500 mes:hover:text-black">
                     {
                         isExpanded
@@ -244,7 +266,7 @@ function UploadItem(props: { uploadData: UploadedFileWithMetadata, renameBinder:
             }
 
             <div className="mes:absolute mes:-top-2 mes:-right-2 mes:hidden mes:group-hover:flex mes:text-red-500 mes:hover:text-red-700">
-                <XCircle size="1rem" onClick={() => { removeUpload(index) }} />
+                <XCircle size="1rem" onClick={() => { removeUpload(index) }} title="Remove File" />
             </div>
 
         </div>
@@ -339,7 +361,7 @@ async function convertAndSubmitUploads(uploads: UploadedFileWithMetadata[]): Pro
 
             const response = await ImportCards(upload.file, upload.binderId ?? '');
 
-            if (!response.errors) {
+            if (!response.errors?.length) {
                 upload.uploaded = true;
             } else {
                 upload.uploaded = true
