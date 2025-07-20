@@ -27,15 +27,27 @@ export default async function setupTCGImporter() {
     }
 }
 
-function getMountElement(): HTMLHeadingElement | null | undefined {
-    return document?.getElementById('maincontent')?.querySelector('h1');
+function getMountElement(): HTMLElement | null | undefined {
+    return document?.getElementById('maincontent');
 }
 
 function decorate(): void {
     const mountElement = getMountElement();
+
     if (mountElement) {
         console.log('Mounting MES TCGPlayer Import controls...')
-        createRoot(mountElement).render(
+
+        const mountDiv = document.createElement('div');
+
+        mountDiv.id = "mes-importer-root";
+
+        mountDiv.style.position = 'absolute';
+        mountDiv.style.top = '80vh';
+        mountDiv.style.right = '8px';
+
+        mountElement.appendChild(mountDiv)
+
+        createRoot(mountDiv).render(
             <StrictMode>
                 <ImportButton />
             </StrictMode>,
