@@ -21,7 +21,7 @@ export default async function setupTCGImporter() {
             if (mountingElement) {
                 observer.observe(mountingElement, observerConfig);
             } else {
-                console.error('MES could not locate the header for observing changes')
+                console.error('MES could not locate the main content area for mount.')
             }
         }
     }

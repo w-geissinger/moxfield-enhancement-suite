@@ -38,7 +38,7 @@ export default defineConfig({
         react(),
         viteTouchGlobalCss({
             cssFilePath: path.resolve(__dirname, 'contentScript.css'),
-            watchFiles: ['.tsx'],
+            watchFiles: ['.tsx', '.html'],
         }),
         tailwindcss(),
         crx({
