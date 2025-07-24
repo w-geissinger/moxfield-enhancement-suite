@@ -2,7 +2,7 @@ import React from 'react'
 import { FileUploader } from "react-drag-drop-files"
 import { Authenticate, CreateBinder, ImportCards, TCGPlayerToMoxfieldCSV } from './Requests';
 import { rateLimitedMap } from '../../utilities/rateLimiting';
-import { ChevronDown, ChevronUp, ExclamationCircle, X, XCircle } from 'react-bootstrap-icons';
+import { ChevronDown, ChevronUp, CloudArrowUp, ExclamationCircle, X, XCircle } from 'react-bootstrap-icons';
 import { Trefoil } from 'ldrs/react';
 import 'ldrs/react/Trefoil.css';
 
@@ -168,35 +168,29 @@ export default function UploadInterface(props: { completed: () => void }) {
             </div>
 
             {
-                error && <div className="mes:flex mes:flex-row mes:items-center mes:pt-6 mes:gap-2 mes:text-red-400">
-                    <ExclamationCircle size="1.5rem" />
-                    <span className="mes:text-base mes:font-bold">{PluralErrors[error]}</span>
+                error && <div className="mes:flex mes:flex-row mes:items-center mes:gap-2 mes:text-red-500 mes:bg-red-200 mes:rounded mes:p-2 mes:mt-4 mes:max-w-min">
+                    <ExclamationCircle size="1rem" />
+                    <span className="mes:text-base mes:font-semibold mes:text-nowrap">{PluralErrors[error]}</span>
                 </div>
             }
         </div>
         {
             !uploads?.length &&
             <FileUploader multiple handleChange={handleFileUploads} name="file" types={['CSV']} >
-                    <div className="mes:flex mes:items-center mes:justify-center mes:h-25 mes:w-[50vw] mes:border-1 mes:border-dashed" style={{ borderColor: 'hsl(279, 68%, 32%)' }}>
+                <div className="mes:flex mes:flex-col mes:items-center mes:justify-center mes:gap-2 mes:p-6 mes:w-[50vw] mes:border-1 mes:border-dashed" style={{ borderColor: 'hsl(279, 68%, 32%)' }}>
+                    <CloudArrowUp size="4rem" />
                     <span className="mes:text-xs">Drop your CSV files here...</span>
                 </div>
             </FileUploader>
         }
         {
             !!uploads?.length &&
-            <div className="mes:flex mes:flex-col mes:min-h-0 mes:overflow-none mes:py-3 mes:w-[50vw] mes:shadow-lg mes:rounded mes:border-1 mes:border-gray-200">
-
-                <div className="mes:flex mes:flex-row mes:text-sm mes:font-bold mes:py-1 mes:mx-3 mes:border-1 mes:rounded mes:shadow-sm mes:border-gray-300 mes:z-2 mes:relative">
-                    <span className="mes:w-10 mes:pl-1 mes:text-center mes:border-r-1">#</span>
-                    <span className="mes:w-full mes:pl-3">File/Binder Name</span>
-                </div>
-                <div className="mes:flex mes:flex-col mes:gap-2 mes:overflow-y-auto mes:px-3 mes:pt-2 mes:overflow-x-none z-1">
-                    {
-                        uploads.map((uploadData, index) => {
-                            return <UploadItem uploadData={uploadData} renameBinder={renameBinder} removeUpload={removeUpload} index={index} key={index} />
-                        })
-                    }
-                </div>
+            <div className="mes:flex mes:flex-col mes:w-[50vw] mes:gap-2 mes:overflow-y-auto mes:px-3 mes:pt-2 mes:overflow-x-none z-1">
+                {
+                    uploads.map((uploadData, index) => {
+                        return <UploadItem uploadData={uploadData} renameBinder={renameBinder} removeUpload={removeUpload} index={index} key={index} />
+                    })
+                }
             </div>
         }
         <div className="mes:flex mes:flex-row mes:justify-end mes:pt-2 mes:border-t-1 mes:border-t-gray-300">
@@ -222,7 +216,7 @@ function UploadItem(props: { uploadData: UploadedFileWithMetadata, renameBinder:
     }
 
     return <div
-        className={`mes:flex mes:flex-col mes:rounded mes:relative mes:max-w-full mes:group mes:border-1 mes:border-gray-200 mes:shadow-sm mes:hover:shadow-2xl mes:hover:border-gray-400 ${uploadData?.error ? 'mes:bg-red-100' : 'mes:bg-neutral-100'}`}
+        className={`mes:flex mes:flex-col mes:rounded mes:relative mes:max-w-full mes:group mes:border-1 mes:border-gray-200 mes:shadow-sm mes:hover:shadow-2xl mes:hover:border-gray-400 mes:bg-neutral-100`}
     >
         <div className="mes:flex mes:flex-row mes:justify-between mes:items-center mes:h-12" key={index}>
             <div className="mes:text-sm mes:flex mes:flex-row mes:gap-2 mes:pr-2 mes:h-full mes:w-full mes:items-center">
@@ -230,19 +224,19 @@ function UploadItem(props: { uploadData: UploadedFileWithMetadata, renameBinder:
                 {
                     !uploadData.binderId &&
                     <fieldset className=' mes:border-1! mes:focus-within:!border-gray-700 mes:!border-gray-300 mes:rounded-md mes:w-full mes:leading-3 mes:-mt-1'>
-                            <legend className="mes:relative mes:-top-0.25 mes:pb-0! mes:mb-0! mes:ml-1.5 mes:!px-0.5 mes:!text-[0.5rem] mes:!float-none mes:max-w-min mes:text-nowrap mes:font-semibold">
-                                Binder Name
-                            </legend>
-                            <input
-                                id={`upload-${index}`}
-                                className="mes:w-full mes:px-2 mes:pb-1 mes:!-mt-1 mes:focus:!border-none mes:focus:outline-0"
-                                value={uploadData.label}
-                                onClick={e => { e.stopPropagation(); }}
-                                onChange={(e) => renameBinder(e.target.value, index)}
-                                type="text"
-                            ></input>
+                        <legend className="mes:relative mes:-top-0.25 mes:pb-0! mes:mb-0! mes:ml-1.5 mes:!px-0.5 mes:!text-[0.5rem] mes:!float-none mes:max-w-min mes:text-nowrap mes:font-semibold">
+                            Binder Name
+                        </legend>
+                        <input
+                            id={`upload-${index}`}
+                            className="mes:w-full mes:px-2 mes:pb-1 mes:!-mt-1 mes:focus:!border-none mes:focus:outline-0"
+                            value={uploadData.label}
+                            onClick={e => { e.stopPropagation(); }}
+                            onChange={(e) => renameBinder(e.target.value, index)}
+                            type="text"
+                        ></input>
                     </fieldset>
-                    
+
                 }
                 {
                     !!uploadData.binderId &&
@@ -257,11 +251,14 @@ function UploadItem(props: { uploadData: UploadedFileWithMetadata, renameBinder:
                         isExpanded
                             ? <ChevronUp size="1rem" onClick={() => setExpanded(false)} />
                             : <ChevronDown size="1rem" onClick={() => setExpanded(true)} />
-
                     }
-                    <div className="mes:absolute mes:-top-2 mes:-left-2 mes:text-red-300 mes:group-hover:text-red-500">
-                        <ExclamationCircle size="1rem" />
-                    </div>
+                </div>
+            }
+
+            {
+                !!uploadData.error &&
+                <div className="mes:absolute mes:-top-2 mes:right-4 mes:text-red-300 mes:group-hover:text-red-500">
+                    <ExclamationCircle size="1rem" />
                 </div>
             }
 
