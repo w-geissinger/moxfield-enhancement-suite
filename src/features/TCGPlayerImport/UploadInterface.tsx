@@ -2,7 +2,7 @@ import React from 'react'
 import { FileUploader } from "react-drag-drop-files"
 import { Authenticate, CreateBinder, ImportCards, TCGPlayerToMoxfieldCSV } from './Requests';
 import { rateLimitedMap } from '../../utilities/rateLimiting';
-import { ChevronDown, ChevronUp, CloudArrowUp, ExclamationCircle, X, XCircle } from 'react-bootstrap-icons';
+import { CheckCircle, ChevronDown, ChevronUp, CloudArrowUp, ExclamationCircle, X, XCircle } from 'react-bootstrap-icons';
 import { Trefoil } from 'ldrs/react';
 import 'ldrs/react/Trefoil.css';
 
@@ -188,7 +188,7 @@ export default function UploadInterface(props: { completed: () => void }) {
             <div className="mes:flex mes:flex-col mes:w-[50vw] mes:gap-2 mes:overflow-y-auto mes:px-3 mes:pt-2 mes:overflow-x-none z-1">
                 {
                     uploads.map((uploadData, index) => {
-                        return <UploadItem uploadData={uploadData} renameBinder={renameBinder} removeUpload={removeUpload} index={index} key={index} />
+                        return <UploadCard uploadData={uploadData} renameBinder={renameBinder} removeUpload={removeUpload} index={index} key={index} />
                     })
                 }
             </div>
@@ -206,7 +206,7 @@ export default function UploadInterface(props: { completed: () => void }) {
     </div>
 }
 
-function UploadItem(props: { uploadData: UploadedFileWithMetadata, renameBinder: (value: string, index: number) => void, removeUpload: (index: number) => void, index: number }) {
+function UploadCard(props: { uploadData: UploadedFileWithMetadata, renameBinder: (value: string, index: number) => void, removeUpload: (index: number) => void, index: number }) {
     const { uploadData, renameBinder, removeUpload, index } = props;
 
     const [isExpanded, setExpanded] = React.useState(false);
@@ -255,12 +255,20 @@ function UploadItem(props: { uploadData: UploadedFileWithMetadata, renameBinder:
                 </div>
             }
 
-            {
-                !!uploadData.error &&
-                <div className="mes:absolute mes:-top-2 mes:right-4 mes:text-red-300 mes:group-hover:text-red-500">
-                    <ExclamationCircle size="1rem" />
-                </div>
-            }
+            <div className="mes:absolute mes: mes:-top-2 mes:right-4 mes:flex mes:flex-row mes:gap-1">
+                {
+                    !!uploadData.error &&
+                    <div className="mes:text-red-300 mes:group-hover:text-red-500">
+                        <ExclamationCircle size="1rem" />
+                    </div>
+                }
+                {
+                    !!uploadData.uploaded &&
+                    <div className="mes:text-green-500 mes:group-hover:text-green-600">
+                        <CheckCircle size="1rem" />
+                    </div>
+                }
+            </div>
 
             <div className="mes:absolute mes:-top-2 mes:-right-2 mes:hidden mes:group-hover:flex mes:text-red-500 mes:hover:text-red-700">
                 <XCircle size="1rem" onClick={() => { removeUpload(index) }} title="Remove File" />
@@ -361,6 +369,7 @@ async function convertAndSubmitUploads(uploads: UploadedFileWithMetadata[]): Pro
 
             if (!response.errors?.length) {
                 upload.uploaded = true;
+                upload.error = undefined;
             } else {
                 upload.uploaded = true
                 isError = true;
