@@ -298,7 +298,7 @@ async function convertAndSubmitUploads(uploads: UploadedFileWithMetadata[]): Pro
         }
 
         let convertedUploads: UploadedFileWithMetadata[] = await Promise.all(uploads.map(async file => {
-            if (file.format !== 'moxfield') {
+            if (file.format !== 'moxfield' && !file.uploaded) {
                 try {
                     const conversion = await TCGPlayerToMoxfieldCSV(file.file);
                     return {
@@ -323,7 +323,8 @@ async function convertAndSubmitUploads(uploads: UploadedFileWithMetadata[]): Pro
 
         // get binders
         await Promise.all(rateLimitedMap(async (upload, index) => {
-            if (upload.uploaded) {
+            // if a binder was previously created, or the list has already been uploaded
+            if (upload.binderId || upload.uploaded) {
                 return true;
             }
 
