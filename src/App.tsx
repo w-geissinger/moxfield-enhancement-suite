@@ -1,4 +1,4 @@
-import { X } from 'react-bootstrap-icons';
+import { CheckCircle, Clock, X } from 'react-bootstrap-icons';
 import icon128 from '../public/icon128.png';
 
 
@@ -17,32 +17,39 @@ function App() {
                 </div>
             </div>
 
-            <div className="mes:flex mes:flex-col mes:w-full">
-                <span>
-                    This extension currently does the following:
-                </span>
+            <div className="mes:rounded-lg mes:flex mes:flex-row mes:items-center mes:w-full mes:shadow-md mes:p-1 mes:dark:border-1 mes:dark:border-light-300">
+                <CheckCircle size="6rem" className="mes:px-3" color="currentColor" />
+                <div className="mes:flex mes:flex-col mes:py-4 mes:pr-2 mes:gap-1 mes:w-92">
+                    <span className="mes:font-bold mes:text-lg">
+                        Current Features:
+                    </span>
 
-                <ul className="mes:pl-2">
-                    <li>
-                        - Adds a 'bulk import' button to your collection for importing TCGPlayer CSV files
-                    </li>
-                </ul>
+                    <ul className="mes:pl-4">
+                        <li>
+                            • Adds a 'bulk import' button to your collection for importing TCGPlayer CSV files
+                        </li>
+                    </ul>
+                </div>
             </div>
 
 
-            <div className="mes:flex mes:flex-col mes:w-full">
-                <span>
-                    Some future features may include:
-                </span>
+            <div className="mes:rounded-lg mes:flex mes:flex-row mes:items-center mes:w-full mes:shadow-md mes:p-1 mes:dark:border-1 mes:dark:border-light-300">
+                <Clock size="6rem" className="mes:px-3" color="currentColor" />
+                <div className="mes:flex mes:flex-col mes:py-4 mes:pr-2 mes:gap-1 mes:w-92">
+                    <span className="mes:font-bold mes:text-lg">
+                        Potential Additions:
+                    </span>
 
-                <ul className="mes:pl-2">
-                    <li>
-                        - Improved search controls within the moxfield search page(s)
-                    </li>
-                    <li>
-                        - Applying a dark mode to Moxfield
-                    </li>
-                </ul>
+                    <ul className="mes:pl-4">
+                        <li>
+                            • Improved search controls within the moxfield search page(s)
+                        </li>
+                        <li>
+                            • Applying a dark mode to Moxfield
+                        </li>
+                    </ul>
+                </div>
+
             </div>
 
             <div className="mes:flex mes:flex-row mes:w-full mes:justify-between mes:text-sm">
